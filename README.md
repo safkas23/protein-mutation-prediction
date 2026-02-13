@@ -44,4 +44,4 @@ protein-mutation-prediction/
 - Hyperparameter optimization
 
 ## Author
-s k
+safiah k
