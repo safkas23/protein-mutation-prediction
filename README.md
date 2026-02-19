@@ -38,10 +38,24 @@ protein-mutation-prediction/
   - AUC (classification)
   - RMSE (regression)
 
-## Future Work
-- Integrate pretrained protein embeddings
-- SHAP-based feature interpretation
-- Hyperparameter optimization
+## Week 4 Progress
+
+This week I implemented pretrained protein embedding integration and hybrid modeling.
+
+Completed tasks:
+
+- Integrated pretrained protein embeddings
+- Combined embeddings with physicochemical features
+- Implemented hybrid machine learning models
+- Evaluated performance using protein-stratified validation
+- Improved prediction accuracy compared to baseline models
+
+New folders added:
+
+src/ → embedding code  
+results/ → model results  
+notebooks/ → embedding experiments
+
 
 ## Author
 safiah k
