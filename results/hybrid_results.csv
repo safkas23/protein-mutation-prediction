@@ -1,0 +1,5 @@
+Model,Accuracy,AUC
+Logistic Regression,0.72,0.80
+Random Forest,0.78,0.85
+Embedding Model,0.82,0.88
+Hybrid Model,0.86,0.91
