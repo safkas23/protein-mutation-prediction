@@ -1,0 +1,3 @@
+Shows the distribution of protein stability scores in the dataset. 
+This graph helps identify the overall range, central tendency, and any skewness in stability values, 
+providing insight into how stable or unstable most proteins are.
