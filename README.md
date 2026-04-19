@@ -39,9 +39,9 @@ A local snapshot is stored in `/data` for reproducibility:
   - figures/ # generated plots
   - regression_metrics.csv
 
-pipeline.py # full end-to-end pipeline
-requirements.txt
-README.md
+- pipeline.py # full end-to-end pipeline
+- requirements.txt
+- README.md
 
 
 ---
