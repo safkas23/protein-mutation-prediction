@@ -1,7 +1,5 @@
 # Protein Mutation Impact Prediction
 
-# Protein Mutation Impact Prediction
-
 ## Overview
 This project predicts the functional and stability effects of protein mutations using machine learning and protein sequence representations. The main goal is to compare classical feature-based models with pretrained protein embeddings (ESM-2) and evaluate whether embeddings improve predictitions.
 
