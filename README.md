@@ -1,61 +1,127 @@
 # Protein Mutation Impact Prediction
 
+# Protein Mutation Impact Prediction
+
 ## Overview
-This project focuses on predicting the functional and stability effects of protein mutations
-using machine learning models. The goal is to compare baseline models with embedding-based
-approaches and evaluate their ability to generalize across proteins.
+This project predicts the functional and stability effects of protein mutations using machine learning and protein sequence representations. The main goal is to compare classical feature-based models with pretrained protein embeddings (ESM-2) and evaluate whether embeddings improve predictitions.
+
+The project includes:
+- Physicochemical feature engineering
+- Character n-gram baselines
+- Pretrained protein embeddings (ESM-2)
+- Hybrid models combining both feature types
+- Statistical evaluation and ablation studies
+- Model interpretability using SHAP
+
+---
 
 ## Dataset
-The dataset contains:
-- Wild-type protein sequence
-- Mutant sequence
-- Mutation position
-- Experimental outcome (stability change or functional impact)
+The dataset is sourced from Hugging Face:
+
+- `proteinglm/stability_prediction`
+
+It contains:
+- Protein amino acid sequences (`seq`)
+- Stability change / mutation effect labels (`label`)
+
+A local snapshot is stored in `/data` for reproducibility:
+- `train.csv`
+- `test.csv`
+
+---
 
 ## Project Structure
-```
+
 protein-mutation-prediction/
 │
-├── data/               # Raw and processed datasets
-├── notebooks/          # Jupyter notebooks for EDA and experiments
-├── src/                # Source code for preprocessing and modeling
-├── figures/            # Generated plots and visualizations
-├── requirements.txt    # Python dependencies
-└── README.md           # Project documentation
-```
+├── data/ # train/test CSV snapshots
+├── notebooks/ # step-by-step experiments
+├── experiments/ # full reproducibility pipeline
+├── src/ # feature extraction + evaluation modules
+├── results/ # model outputs and metrics
+│ ├── figures/ # generated plots
+│ ├── regression_metrics.csv
+│
+├── pipeline.py # full end-to-end pipeline
+├── requirements.txt
+└── README.md
+
+
+---
 
 ## Modeling Approach
-- Baseline Models:
-  - Logistic Regression
+
+### 1. Physicochemical Baseline
+- Amino acid composition
+- Hydrophobicity features
+- Net charge
+- Sequence length
+
+### 2. N-gram Models
+- Character-level 1–2 gram representation
+- Models:
+  - Ridge Regression
   - Random Forest
-- Advanced Models:
   - Gradient Boosting
-  - Embedding-based Neural Networks
 
-## Validation Strategy
-- Stratified cross-validation by protein ID
-- Metrics:
-  - AUC (classification)
-  - RMSE (regression)
+### 3. Protein Embeddings (ESM-2)
+- Pretrained transformer model (`facebook/esm2_t6_8M_UR50D`)
+- Sequence-level embeddings via mean pooling
 
-## Week 4 Progress
+### 4. Hybrid Model
+- Concatenation of:
+  - Physicochemical features
+  - ESM embeddings
+- Ridge regression model
 
-This week I implemented pretrained protein embedding integration and hybrid modeling.
+---
 
-Completed tasks:
+## Evaluation Strategy
 
-- Integrated pretrained protein embeddings
-- Combined embeddings with physicochemical features
-- Implemented hybrid machine learning models
-- Evaluated performance using protein-stratified validation
-- Improved prediction accuracy compared to baseline models
+Models are evaluated using:
+- MAE (Mean Absolute Error)
+- R² Score
 
-New folders added:
+Ablation studies include:
+- Physicochemical only
+- ESM only
+- Hybrid model
 
-src/ → embedding code  
-results/ → model results  
-notebooks/ → embedding experiments
+Statistical significance testing:
+- Paired t-test across evaluation splits
+
+---
+
+## Interpretability
+
+Model interpretability is performed using SHAP:
+
+- SHAP bar plots (global importance)
+- SHAP beeswarm plots (feature distribution effects)
+
+Outputs saved to:
+results/figures/
 
 
-## Author
-safiah k
+---
+
+## Key Outputs
+
+After running `pipeline.py`, the following are generated:
+
+- `results/regression_metrics.csv`
+- `results/figures/shap_bar.png`
+- `results/figures/shap_beeswarm.png`
+
+---
+
+## How to Run
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+
+Run full pipeline:
+
+python pipeline.py
