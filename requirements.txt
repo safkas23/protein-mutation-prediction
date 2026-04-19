@@ -6,3 +6,4 @@ shap
 torch
 transformers
 datasets
+scipy
