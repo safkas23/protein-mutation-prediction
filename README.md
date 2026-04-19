@@ -31,18 +31,18 @@ A local snapshot is stored in `/data` for reproducibility:
 ## Project Structure
 
 protein-mutation-prediction/
-│
-├── data/ # train/test CSV snapshots
-├── notebooks/ # step-by-step experiments
-├── experiments/ # full reproducibility pipeline
-├── src/ # feature extraction + evaluation modules
-├── results/ # model outputs and metrics
-│ ├── figures/ # generated plots
-│ ├── regression_metrics.csv
-│
-├── pipeline.py # full end-to-end pipeline
-├── requirements.txt
-└── README.md
+data/ # train/test CSV snapshots
+
+notebooks/ # step-by-step experiments
+experiments/ # full reproducibility pipeline
+src/ # feature extraction + evaluation modules
+results/ # model outputs and metrics
+figures/ # generated plots
+regression_metrics.csv
+
+pipeline.py # full end-to-end pipeline
+requirements.txt
+README.md
 
 
 ---
