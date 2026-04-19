@@ -2,10 +2,7 @@ numpy
 pandas
 scikit-learn
 matplotlib
-seaborn
-xgboost
 shap
-jupyter
 torch
 transformers
 datasets
