@@ -8,6 +8,4 @@ shap
 jupyter
 torch
 transformers
-shap
-scikit-learn
 datasets
