@@ -88,22 +88,14 @@ hybrid_preds = hybrid_model.predict(X_test_hybrid)
 
 # evaluate
 
+phys_results = evaluate_regression_model(y_test, phys_preds)
+esm_results = evaluate_regression_model(y_test, esm_preds)
+hybrid_results = evaluate_regression_model(y_test, hybrid_preds)
+
 results = pd.DataFrame([
-    {
-        "Model": "Physicochemical",
-        "MAE": mean_absolute_error(y_test, phys_preds),
-        "R2": r2_score(y_test, phys_preds)
-    },
-    {
-        "Model": "ESM",
-        "MAE": mean_absolute_error(y_test, esm_preds),
-        "R2": r2_score(y_test, esm_preds)
-    },
-    {
-        "Model": "Hybrid",
-        "MAE": mean_absolute_error(y_test, hybrid_preds),
-        "R2": r2_score(y_test, hybrid_preds)
-    }
+    {"Model": "Physicochemical", **phys_results},
+    {"Model": "ESM", **esm_results},
+    {"Model": "Hybrid", **hybrid_results}
 ])
 
 os.makedirs("results", exist_ok=True)
