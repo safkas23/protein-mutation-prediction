@@ -1,14 +1,19 @@
 # Protein Mutation Impact Prediction
 
 ## Overview
-This project predicts the functional and stability effects of protein mutations using machine learning and protein sequence representations. The main goal is to compare classical feature-based models with pretrained protein embeddings (ESM-2) and evaluate whether embeddings improve predictitions.
-
+This project predicts the functional and stability effects of protein mutations using machine learning and protein sequence representations. The main goal is to compare classical feature-based models with pretrained protein embeddings (ESM-2) and evaluate whether embeddings improve predictions.
 The project includes:
+
 - Physicochemical feature engineering
 - Character n-gram baselines
 - Pretrained protein embeddings (ESM-2)
 - Hybrid models combining both feature types
-- Statistical evaluation and ablation studies
+- Protein-stratified cross-validation (Leave-One-Group-Out)
+- Statistical significance testing with paired t-tests
+- Ablation studies including SHAP-based feature removal
+- Negative control experiments (shuffled labels)
+- Train/test leakage analysis
+- Multi-model comparison (Ridge, Random Forest, Gradient Boosting)
 - Model interpretability using SHAP
 
 ---
@@ -22,103 +27,134 @@ It contains:
 - Protein amino acid sequences (`seq`)
 - Stability change / mutation effect labels (`label`)
 
-A local snapshot is stored in `/data` for reproducibility:
-- `train.csv`
-- `test.csv`
+A local snapshot is stored in /data for reproducibility:
+- train.csv — 53,614 sequences
+- test.csv — 12,851 sequences
+
+Sequences belong to two protein families, identified by length:
+- Length 43 → GB1
+- Length 50 → GFP
 
 ---
 
 ## Project Structure
 
-- protein-mutation-prediction/
-- data/ # train/test CSV snapshots
-- notebooks/ # step-by-step experiments
-- experiments/ # full reproducibility pipeline
-- src/ # feature extraction + evaluation modules
-- results/ # model outputs and metrics
-  - figures/ # generated plots
-  - regression_metrics.csv
-
-- pipeline.py # full end-to-end pipeline
-- requirements.txt
-- README.md
+protein-mutation-prediction/
+├── data/                   # train/test CSV snapshots
+├── notebooks/              # step-by-step experiments
+│   ├── 01_data_and_phys_features.ipynb
+│   ├── 02_baselines_ngram_models.ipynb
+│   ├── 03_esm_embeddings.ipynb
+│   ├── 04_hybrid_model.ipynb
+│   ├── 05_ablation_and_statistics.ipynb
+│   ├── 06_shap_validation.ipynb
+│   ├── 07_leakage_analysis.ipynb
+│   ├── 08_model_comparison.ipynb
+│   └── 09_feature_importance.ipynb
+├── experiments/            # legacy exploratory notebooks
+│   ├── 00_full_pipeline.ipynb
+│   └── legacy_regression_model.ipynb
+├── src/                    # shared modules
+│   ├── features.py         # physicochemical feature extraction
+│   ├── evaluation.py       # metrics, t-test, CV summary
+│   └── embedding_loader.py # ESM loading and inference
+├── results/                # model outputs
+│   └── figures/            # generated plots
+├── pipeline.py             # full end-to-end pipeline
+├── requirements.txt
+└── README.md
 
 
 ---
 
 ## Modeling Approach
 
-### 1. Physicochemical Baseline
-- Amino acid composition
-- Hydrophobicity features
+1. Physicochemical Baseline
+- Amino acid composition (20 features)
+- Mean hydrophobicity (Kyte-Doolittle scale)
 - Net charge
 - Sequence length
+- Total: 23 features
 
-### 2. N-gram Models
-- Character-level 1–2 gram representation
-- Models:
-  - Ridge Regression
-  - Random Forest
-  - Gradient Boosting
+2. N-gram Baselines
+- Character-level 1–2 gram representation (max 5,000 features)
+- Models: Ridge Regression, Random Forest, Gradient Boosting
 
-### 3. Protein Embeddings (ESM-2)
-- Pretrained transformer model (`facebook/esm2_t6_8M_UR50D`)
-- Sequence-level embeddings via mean pooling
+3. Protein Embeddings (ESM-2)
+- Pretrained transformer: facebook/esm2_t6_8M_UR50D
+- Sequence-level embeddings via mean pooling over token hidden states
+- Implemented in src/embedding_loader.py
 
-### 4. Hybrid Model
-- Concatenation of:
-  - Physicochemical features
-  - ESM embeddings
-- Ridge regression model
+4. Hybrid Model
+- Concatenation of physicochemical features and ESM-2 embeddings
+- Ridge regression on the combined feature matrix
+- All models trained on full train split (53,614 sequences)
 
 ---
 
 ## Evaluation Strategy
 
-Models are evaluated using:
-- MAE (Mean Absolute Error)
+All models are evaluated on the held-out test set using:
+- MAE (Mean Absolute Error) — primary metric
 - R² Score
 
-Ablation studies include:
+**Cross-Validation
+Protein-stratified Leave-One-Group-Out (LOGO) cross-validation is used to prevent protein family leakage across folds:
+- Fold 1: train on GFP, test on GB1
+- Fold 2: train on GB1, test on GFP
+
+**Statistical Testing
+Paired t-tests across LOGO CV folds compare:
+- Hybrid vs Physicochemical
+- Hybrid vs ESM
+
+**Ablation Studies
 - Physicochemical only
 - ESM only
-- Hybrid model
+- Hybrid (Phys + ESM)
+- Ablated hybrid: top-10 most important ESM dimensions removed
+- SHAP feature removal at thresholds: 5, 10, 20, 50 features
 
-Statistical significance testing:
-- Paired t-test across evaluation splits
+**Negative Control
+All three models retrained on randomly shuffled labels (random_state=42) to confirm results are not noise-driven.
+
+**Leakage Analysis
+- Exact sequence overlap between train and test sets
+- Near-duplicate detection (>90% similarity) on a sample of 100 test × 500 train sequences
 
 ---
 
 ## Interpretability
 
-Model interpretability is performed using SHAP:
+SHAP is used to explain the hybrid Ridge model:
+- Bar plot: global mean feature importance
+- Beeswarm plot: distribution of per-sample feature effects
+- Feature importance consistency checked across Ridge, Random Forest, and Gradient Boosting
 
-- SHAP bar plots (global importance)
-- SHAP beeswarm plots (feature distribution effects)
-
-Outputs saved to:
-results/figures/
-
+Outputs saved to results/figures/
 
 ---
 
 ## Key Outputs
 
-After running `pipeline.py`, the following are generated:
-
-- `results/regression_metrics.csv`
-- `results/figures/shap_bar.png`
-- `results/figures/shap_beeswarm.png`
+After running pipeline.py, the following are generated in results/:
+- regression_metrics.csv = MAE and R² for Phys, ESM, Hybrid (Ridge)
+- ablation_results.csv = Ablation study across all feature sets
+- statistical_tests.csv = Paired t-test results from LOGO CV
+- negative_control_results.csv = Shuffled-label control results
+- shap_feature_removal.csv = Performance after removing top SHAP features
+- model_comparison.csv = Ridge, RF, GBM across all feature sets
+- feature_importance_consistency.csv = Feature rankings across model types
+- leakage_analysis.csv = Train/test overlap report
+- figures/shap_bar.png = SHAP global importance bar chart
+- figures/shap_beeswarm.png = SHAP beeswarm plot
 
 ---
 
 ## How to Run
 
 Install dependencies:
-
-```bash
 pip install -r requirements.txt
 
-Run full pipeline:
-
+Run the full pipeline:
 python pipeline.py
