@@ -11,7 +11,7 @@ from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_absolute_error, r2_score
 from transformers import AutoTokenizer, AutoModel
 from src.features import extract_physicochemical_features
-from src.evaluation import regression_metrics
+from src.evaluation import evaluate_regression_model
 from difflib import SequenceMatcher
 
 
