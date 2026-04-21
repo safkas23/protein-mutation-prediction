@@ -92,27 +92,27 @@ All models are evaluated on the held-out test set using:
 - MAE (Mean Absolute Error) — primary metric
 - R² Score
 
-**Cross-Validation
+**Cross-Validation**
 Protein-stratified Leave-One-Group-Out (LOGO) cross-validation is used to prevent protein family leakage across folds:
 - Fold 1: train on GFP, test on GB1
 - Fold 2: train on GB1, test on GFP
 
-**Statistical Testing
+**Statistical Testing**
 Paired t-tests across LOGO CV folds compare:
 - Hybrid vs Physicochemical
 - Hybrid vs ESM
 
-**Ablation Studies
+**Ablation Studies**
 - Physicochemical only
 - ESM only
 - Hybrid (Phys + ESM)
 - Ablated hybrid: top-10 most important ESM dimensions removed
 - SHAP feature removal at thresholds: 5, 10, 20, 50 features
 
-**Negative Control
+**Negative Control**
 All three models retrained on randomly shuffled labels (random_state=42) to confirm results are not noise-driven.
 
-**Leakage Analysis
+**Leakage Analysis**
 - Exact sequence overlap between train and test sets
 - Near-duplicate detection (>90% similarity) on a sample of 100 test × 500 train sequences
 
