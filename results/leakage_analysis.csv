@@ -1,2 +1,0 @@
-Exact_Overlap,Near_Duplicate_Count,ESM_Pretraining_Note
-26,6,ESM-2 was pretrained on UniRef50. Overlap between test sequences and UniRef50 was not checked programmatically.
