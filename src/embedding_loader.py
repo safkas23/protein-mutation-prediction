@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from transformers import AutoTokenizer, AutoModel
  
-# ESM-2 model
+# esm model
 ESM_MODEL_NAME = "facebook/esm2_t6_8M_UR50D"
  
 def load_esm_model(model_name=ESM_MODEL_NAME):
