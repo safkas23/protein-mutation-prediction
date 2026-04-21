@@ -93,11 +93,13 @@ All models are evaluated on the held-out test set using:
 - R² Score
 
 **Cross-Validation**
+
 Protein-stratified Leave-One-Group-Out (LOGO) cross-validation is used to prevent protein family leakage across folds:
 - Fold 1: train on GFP, test on GB1
 - Fold 2: train on GB1, test on GFP
 
 **Statistical Testing**
+
 Paired t-tests across LOGO CV folds compare:
 - Hybrid vs Physicochemical
 - Hybrid vs ESM
@@ -110,6 +112,7 @@ Paired t-tests across LOGO CV folds compare:
 - SHAP feature removal at thresholds: 5, 10, 20, 50 features
 
 **Negative Control**
+
 All three models retrained on randomly shuffled labels (random_state=42) to confirm results are not noise-driven.
 
 **Leakage Analysis**
