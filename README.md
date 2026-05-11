@@ -134,7 +134,7 @@ Outputs saved to results/figures/
 
 ## Key Outputs
 
-After running pipeline.py, the following are generated in results/:
+After running pipeline.py, the following are generated in results:
 - regression_metrics.csv = MAE and R² for Phys, ESM, Hybrid (Ridge)
 - ablation_results.csv = Ablation study across all feature sets
 - statistical_tests.csv = Paired t-test results from LOGO CV
